@@ -57,7 +57,7 @@ one package per line
 
 list categories from overlay
 
-- **g-driver** *&lt;overlay&gt;* ***package*** *&lt;category&gt;*/*&lt;package&gt;* *&lt;version&gt;* [*&lt;var&gt;*]
+- **g-driver** *&lt;overlay&gt;* ***package*** *&lt;category&gt;/&lt;package&gt;* *&lt;version&gt;* *[&lt;var&gt;]*
 
 list variables for given package
 
@@ -71,7 +71,7 @@ Variables are those that must be set in ebuild,
 
 Obligatory variables are: *GAPI*, *EAPI*, *SRC_URI*, *GCOMMON_PHASES*
 
-- **g-driver** *&lt;overlay&gt;* ***phase*** *&lt;category&gt;*/*&lt;package&gt;* *&lt;version&gt;* *&lt;ebuild-function&gt;*
+- **g-driver** *&lt;overlay&gt;* ***phase*** *&lt;category&gt;/&lt;package&gt;* *&lt;version&gt;* *&lt;ebuild-function&gt;*
 
 print source code for a given ebuild function
 
