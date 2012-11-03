@@ -39,6 +39,10 @@ populate overlay with ebuilds and other data
 
 *g-common* uses appropriate *g-driver* to have the job done
 
+- **g-driver** ***GAPI***
+
+print *GAPI* -- API of *g-driver*, currently 0
+
 - **g-driver** *&lt;overlay&gt;* ***sync*** *&lt;url&gt;*
 
 synchronize overlay
@@ -66,10 +70,10 @@ If *var* argument is given *g-driver* should print value for this variable or No
 If *var* is not given *g-driver* should print a list of variables (one per line) in form
 &lt;variable name&gt; = &lt;value&gt;
 
-Variables are those that must be set in ebuild,
-*GAPI* (API of *g-driver*, currently 0) and *GCOMMON_PHASES* (ebuild function that *g-driver* will handle)
+Variables are those that must be set in ebuild
+and *GCOMMON_PHASES* (ebuild function that *g-driver* will handle)
 
-Obligatory variables are: *GAPI*, *EAPI*, *SRC_URI*, *GCOMMON_PHASES*
+Obligatory variables are: *EAPI*, *SRC_URI*, *GCOMMON_PHASES*
 
 - **g-driver** *&lt;overlay&gt;* ***phase*** *&lt;category&gt;/&lt;package&gt;* *&lt;version&gt;* *&lt;ebuild-function&gt;*
 
