@@ -77,6 +77,6 @@ print source code for a given ebuild function
 
 *g-driver* should print source code only for functions previously returned by *package* command, for other functions it can print just new line or nothing
 
-- **g-driver** *&lt;overlay&gt;* *&lt;ebuild-function&gt;*
+- **g-driver** ***ebuild*** *&lt;ebuild-function&gt;*
 
 handle given ebuild function, env variables must be set appropriately
