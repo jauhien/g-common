@@ -1,11 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from subprocess import call
+
 from g_common.parsers import parse_args, Argument, Arguments, Command_group, Command, \
      parse_config, write_config
+from g_common.files import get_cfgfile
 
 def sync(args):
-    print("syncing")
+    cfgfile = get_cfgfile(args.method[0])
+    cfg = parse_config(cfgfile)
+    cmd = cfg['driver']['exec']
+    call([cmd, args.overlay[0] + ' sync ' + args.method[0] + ' ' + args.url[0]])
     return 0
 
 def generate_tree(args):
