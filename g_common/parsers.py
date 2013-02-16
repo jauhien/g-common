@@ -43,3 +43,27 @@ def parse_args(args):
     return create_argparser(args).parse_args()
             
 #end arguments parser
+
+#config parser
+
+def parse_config(f):
+    config = configparser.ConfigParser()
+    config.read(f)
+    cfg = {}
+    for sn, sc in config.items():
+        sec = {}
+        for n, v in sc.items():
+            sec[n] = v
+        cfg[sn] = sec
+    return cfg
+    
+
+def write_config(f, cfg):
+    config = configparser.ConfigParser()
+    for sect, sets in cfg.items():
+        config[sect] = sets
+    with open(f, 'w') as configfile:
+        config.write(configfile)
+    return 0
+
+#end config parser
