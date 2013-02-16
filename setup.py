@@ -2,10 +2,10 @@
 
 from distutils.core import setup
 
-#from g_common.version import VERSION
+from g_common.version import VERSION
 
 setup(name          = 'g-common',
-      version       = '0',
+      version       = VERSION,
       description   = 'g-common repository manager',
       author        = 'Jauhien Piatlicki',
       author_email  = 'piatlicki@gmail.com',
