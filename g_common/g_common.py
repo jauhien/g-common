@@ -4,11 +4,11 @@
 from g_common.parsers import parse_args, Argument, Arguments, Command_group, Command, \
      parse_config, write_config
 
-def sync():
+def sync(args):
     print("syncing")
     return 0
 
-def generate_tree():
+def generate_tree(args):
     print("generating tree")
     return 0
 
