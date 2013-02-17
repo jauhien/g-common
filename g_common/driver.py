@@ -28,9 +28,12 @@ class Overlay:
             self.method = o_cfg.cfg['driver']['method']
 
     def sync(self, uri):
-        print("g-common: syncing overlay " + name)
+        print("g-common: syncing overlay " + self.name)
         self.uri = uri
         subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
         o_cfg = OverlayConfig(self.overlay)
         o_cfg['overlay']['uri'] = self.uri
         o_cfg['overlay']['name'] = self.name
+
+    def generate_tree():
+        pass
