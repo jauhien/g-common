@@ -27,5 +27,5 @@ class Overlay:
             self.exec = o_cfg.cfg['driver']['exec']
             self.method = o_cfg.cfg['driver']['method']
 
-    def sync(url):
+    def sync(self, url):
         print("g-common: syncing overlay " + name)
