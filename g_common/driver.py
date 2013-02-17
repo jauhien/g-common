@@ -37,12 +37,20 @@ class Overlay:
         o_cfg.cfg['overlay'] = {'uri':self.uri, 'name':self.name}
         o_cfg.write()
 
-    def generate_tree():
+    def generate_tree(self):
         pass
 
 class Driver:
     def __init__(self):
+        self.cmd = Command('main', arguments=[('overlay', False)], subcommands=[
+            ('sync', [('method', False), ('uri', False)], self.sync),
+            ## ('eclass', [], subcommands=[
+            ##     ('list', [], self.eclass_list),
+            ##     ]),
+            ])
+    
+    def sync(self):
         pass
 
-    def sync(self):
+    def eclass_list(self):
         pass
