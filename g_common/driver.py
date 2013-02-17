@@ -33,8 +33,9 @@ class Overlay:
         self.uri = uri
         subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
         o_cfg = OverlayConfig(self.overlay)
-        o_cfg.cfg['overlay']['uri'] = self.uri
-        o_cfg.cfg['overlay']['name'] = self.name
+        o_cfg.read()
+        o_cfg.cfg['overlay'] = {'uri':self.uri, 'name':self.name}
+        o_cfg.write()
 
     def generate_tree():
         pass
