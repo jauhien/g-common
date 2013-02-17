@@ -5,43 +5,56 @@ import collections, argparse, configparser
 
 #arguments parser
 
-Argument = collections.namedtuple("Argument", "arg nargs")
-Arguments = collections.namedtuple("Arguments", "args sub")
-Command_group = collections.namedtuple("Command_group", "command help args sub")
-Command = collections.namedtuple("Command", "command help args func")
+class Argument:
+    def __init__(self, name, optional=False, argparser=None):
+        self.name = name
+        self.optional = optional
+        self.argparser = argparser
+        if (self.argparser == None):
+            self.argparser = argparse.ArgumentParser()
+        nargs = None
+        if (self.optional):
+            nargs = '?'
+        self.argparser.add_argument(self.name, nargs=nargs)
 
-def create_argsubparser(subparsers, command):
-    subparser = subparsers.add_parser(command.command, help=command.help)
-    for arg in command.args:
-        subparser.add_argument(arg.arg, nargs=arg.nargs)
+    def parse_args(self, args=None, namespace=None):
+        return self.argparser.parse_args(args, namespace)
 
-    if type(command) is Command:
-        subparser.set_defaults(func=command.func)
-    elif type(command) is Command_group:
-        if command.sub != []:
-            nextparsers = subparser.add_subparsers()
-        for sub in command.sub:
-            create_argsubparser(nextparsers, sub)
-    else:
-        raise Exception
-    return subparser        
 
-def create_argparser(arguments):
-    if not type(arguments) is Arguments:
-        raise Exception
-    parser = argparse.ArgumentParser()
-    for arg in arguments.args:
-        parser.add_argument(arg.arg, nargs=arg.nargs)
-    if arguments.sub != []:
-        subparsers = parser.add_subparsers()
-    for sub in arguments.sub:
-        create_argsubparser(subparsers, sub)
+class Command:
+    def __init__(self, name, arguments=None, action=None, subcommands=None, argparser=None):
+        self.name = name
+        self.action = action
+        self.argparser = argparser
+        if (self.argparser == None):
+            self.argparser = argparse.ArgumentParser()
+        self.arguments = []
+        for arg in arguments:
+            self.arguments.append(Argument(arg[0], optional=arg[1], argparser=self.argparser))
+        self.subparsers = None
+        self.subcommands = []
+        if (self.action == None) and (subcommands != None):
+            self.subparsers = self.argparser.add_subparsers()
+            for cmd in subcommands:
+                nm = cmd[0]
+                subparser = self.subparsers.add_parser(nm)
+                args = cmd[1]
+                act = None
+                sub = None
+                if (hasattr(cmd[2], '__call__')):
+                    act = cmd[2]
+                else:
+                    sub = cmd[2]
+                self.subcommands.append(Command(nm, arguments=args, action=act,
+                                                subcommands=sub, argparser=subparser))
+        elif (self.action != None):
+            self.argparser.set_defaults(action=action)
+        else:
+            raise Exception
+    
+    def parse_args(self, args=None, namespace=None):
+        return self.argparser.parse_args(args, namespace)
 
-    return parser
-
-def parse_args(args):
-    return create_argparser(args).parse_args()
-            
 #end arguments parser
 
 #config parser
