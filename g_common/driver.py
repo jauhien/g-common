@@ -4,6 +4,7 @@
 import os, subprocess
 
 from g_common.files import MethodConfig, OverlayConfig
+from g_common.parsers import Command
 
 class Overlay:
     def __init__(self, overlay, method=None):
@@ -13,7 +14,7 @@ class Overlay:
         if method is not None:
             m_cfg = MethodConfig(method)
             m_cfg.read()
-            self.exec = m_cfg.cfg['driver']['method']
+            self.exec = m_cfg.cfg['driver']['exec']
             try:
                 o_cfg.read()
             except IOError as e:
@@ -30,7 +31,6 @@ class Overlay:
     def sync(self, uri):
         print("g-common: syncing overlay " + self.name)
         self.uri = uri
-        print([self.exec, self.overlay, 'sync', self.method, self.uri])
         subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
         o_cfg = OverlayConfig(self.overlay)
         o_cfg['overlay']['uri'] = self.uri
@@ -40,6 +40,8 @@ class Overlay:
         pass
 
 class Driver:
-    def __init__():
+    def __init__(self):
         pass
 
+    def sync(self):
+        pass
