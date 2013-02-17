@@ -22,13 +22,13 @@ class ConfigFile:
         for sec_name, sec_val in cfg.items():
             self.cfg[sec_name] = sec_val
         with open(self.path, 'w') as configfile:
-            cfg.write(configfile)
+            self.cfg.write(configfile)
 
     def write(self):
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
         with open(self.path, 'w') as configfile:
-            cfg.write(configfile)
+            self.cfg.write(configfile)
 
     def read(self):
         if (self.cfg.read(self.path) == []): raise IOError
