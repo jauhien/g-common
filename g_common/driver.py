@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 
 from g_common.files import MethodConfig, OverlayConfig
 
