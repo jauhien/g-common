@@ -10,7 +10,8 @@ def sync(args):
     return 0
 
 def generate_tree(args):
-    print("generating tree")
+    overlay = Overlay(args.overlay)
+    overlay.generate_tree()
     return 0
 
 def main():

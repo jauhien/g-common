@@ -30,6 +30,7 @@ class Overlay:
     def sync(self, uri):
         print("g-common: syncing overlay " + self.name)
         self.uri = uri
+        print([self.exec, self.overlay, 'sync', self.method, self.uri])
         subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
         o_cfg = OverlayConfig(self.overlay)
         o_cfg['overlay']['uri'] = self.uri
@@ -37,3 +38,9 @@ class Overlay:
 
     def generate_tree():
         pass
+
+class Driver:
+    def __init__():
+        pass
+    
+    def 
