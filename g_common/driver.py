@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+import os, subprocess
 
 from g_common.files import MethodConfig, OverlayConfig
 
@@ -27,5 +27,10 @@ class Overlay:
             self.exec = o_cfg.cfg['driver']['exec']
             self.method = o_cfg.cfg['driver']['method']
 
-    def sync(self, url):
+    def sync(self, uri):
         print("g-common: syncing overlay " + name)
+        self.uri = uri
+        subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
+        o_cfg = OverlayConfig(self.overlay)
+        o_cfg['overlay']['uri'] = self.uri
+        o_cfg['overlay']['name'] = self.name
