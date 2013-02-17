@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from g_common.parsers import Command
+from g_common.driver import Overlay
 
 def sync(args):
-    print("sync")
+    overlay = Overlay(args.overlay, args.method)
+    overlay.sync(args.uri)
     return 0
 
 def generate_tree(args):
