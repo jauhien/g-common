@@ -88,7 +88,7 @@ class Driver:
             ])
 
     def __call__(self, args=None):
-        args = cmd.parse_args(args)
+        args = self.cmd.parse_args(args)
         args.action(args)
     
     def sync(self, args):
