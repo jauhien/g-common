@@ -1,15 +1,15 @@
 I'm planning to rewrite g-common from here: http://git.overlays.gentoo.org/gitweb/?p=proj/g-cran.git;a=summary
 
-The reason is project seems to be abandoned and currently is broken.
+The reason is project is abandoned.
 
 Current status:
 
 - README written ;-)
 
-- experiments on getting it working, comming soon )
+- first draft
 
 I've created this github repository for my one purposes as a place for documentation/code.
-Any information here is for documenting development of this tool. There is nothing working currently.
+Any information here is for documenting development of this tool.
 Any advices are appreciated. )
 
 **g-common** allows you to use non-PMS style repositories in Gentoo
@@ -23,13 +23,16 @@ that have 'g-common' type. Just add them with layman -a.
 
 **g-common interface**
 
-- **g-common** *&lt;overlay&gt;* ***sync*** *&lt;url&gt;*
+- **g-common** *&lt;overlay&gt;* ***sync*** *&lt;method&gt;* *&lt;url&gt;*
 
 synchronize overlay
 
 *overlay* -- path to overlay
 
+*method* -- type of overlay
+
 *url* -- repository url
+
 
 - **g-common** *&lt;overlay&gt;* ***generate-tree***
 
@@ -39,48 +42,43 @@ populate overlay with ebuilds and other data
 
 *g-common* uses appropriate *g-driver* to have the job done
 
-- **g-driver** ***GAPI***
 
-print *GAPI* -- API of *g-driver*, currently 0
-
-- **g-driver** *&lt;overlay&gt;* ***sync*** *&lt;url&gt;*
+- **g-driver** *&lt;overlay&gt;* ***sync*** *&lt;method&gt;* *&lt;url&gt;*
 
 synchronize overlay
 
 *overlay* -- path to overlay
 
+*method* -- type of overlay
+
 *url* -- repository url
 
-- **g-driver** *&lt;overlay&gt;* ***list-packages***
+- **g-driver** *&lt;overlay&gt;* ***ebuild*** ***list***
 
 list packages from overlay in the format
 &lt;category&gt;/&lt;package&gt; &lt;version&gt;
 one package per line
 
-- **g-driver** *&lt;overlay&gt;* ***list-categories***
+- **g-driver** *&lt;overlay&gt;* ***ebuild*** ***src*** &lt;category&gt;/&lt;package&gt; &lt;version&gt;
 
-list categories from overlay
+display source code of a given ebuild
 
-- **g-driver** *&lt;overlay&gt;* ***package*** *&lt;category&gt;/&lt;package&gt;* *&lt;version&gt;* *[&lt;var&gt;]*
+- **g-driver** *&lt;overlay&gt;* ***eclass*** ***list***
 
-list variables for given package
+list eclasses 
 
-If *var* argument is given *g-driver* should print value for this variable or None if it is not set
+- **g-driver** *&lt;overlay&gt;* ***eclass*** ***src*** &lt;name&gt;
 
-If *var* is not given *g-driver* should print a list of variables (one per line) in form
-&lt;variable name&gt; = &lt;value&gt;
+display source code of a given eclass
 
-Variables are those that must be set in ebuild
-and *GCOMMON_PHASES* (ebuild function that *g-driver* will handle)
+- **g-driver** *&lt;overlay&gt;* ***license*** ***list***
 
-Obligatory variables are: *EAPI*, *SRC_URI*, *GCOMMON_PHASES*
+list eclasses 
 
-- **g-driver** *&lt;overlay&gt;* ***phase*** *&lt;category&gt;/&lt;package&gt;* *&lt;version&gt;* *&lt;ebuild-function&gt;*
+- **g-driver** *&lt;overlay&gt;* ***license*** ***src*** &lt;name&gt;
 
-print source code for a given ebuild function
+display given license
 
-*g-driver* should print source code only for functions previously returned by *package* command, for other functions it can print just new line or nothing
-
-- **g-driver** ***ebuild*** *&lt;ebuild-function&gt;*
-
-handle given ebuild function, env variables must be set appropriately
+Every driver should install:
+- config file at /usr/share/g-common/drivers/ named &lt;name&gt;.cfg for every overlay-type it supports. An example can be found in https://github.com/jauhien/g-elisp.
+- xml-file with list of overlays at /etc/layman/overlays/ (see layman manpage) and https://github.com/jauhien/g-elisp for an example.
