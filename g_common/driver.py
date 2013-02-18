@@ -3,7 +3,7 @@
 
 import os, subprocess
 
-from g_common.files import MethodConfig, OverlayConfig
+from g_common.files import MethodConfig, OverlayConfig, RepoNameFile, TreeFile
 from g_common.parsers import Command
 
 class Overlay:
@@ -34,7 +34,7 @@ class Overlay:
     def sync(self, uri):
         print("g-common: syncing overlay " + self.name)
         self.uri = uri
-        self.exec_command(['sync', self.method, self.uri])
+        print(self.exec_command(['sync', self.method, self.uri]))
         o_cfg = OverlayConfig(self.overlay)
         o_cfg.read()
         o_cfg.cfg['overlay'] = {'uri':self.uri, 'name':self.name}
@@ -42,10 +42,18 @@ class Overlay:
         return 0
 
     def generate_tree(self):
+        repo_name = RepoNameFile(self.overlay)
+        repo_name.write()
         eclasses = self.eclass_list()
         for name in eclasses:
             eclass = self.eclass_src(name)
-            print(eclass)
+            eclfile = TreeFile(self.overlay, 'eclass', name)
+            eclfile.write()
+        ebuilds = self.ebuild_list()
+        for name in ebuilds:
+            ebuild = self.ebuild_src(name[0], name[1])
+            eblfile = EbuildFile(self.overlay, name[0], name[1])
+            eblfile.write()
         return 0
 
     def eclass_list(self):
@@ -57,10 +65,15 @@ class Overlay:
         return eclass
 
     def ebuild_list(self):
-        return 0
+        st = self.exec_command(['ebuild', 'list'])
+        st = st.split('\n')
+        for i in range(len(st)):
+             st[i] = st[i].split(' ')
+        return st
 
     def ebuild_src(self, name, version):
-        return 0
+        ebuild = self.exec_command(['ebuild', 'src', name])
+        return ebuild
     
     def license_list(self):
         return 0
