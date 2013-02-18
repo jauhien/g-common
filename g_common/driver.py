@@ -51,7 +51,7 @@ class Overlay:
         for name in eclasses:
             print("g-common: eclass " + name)
             eclass = self.eclass_src(name)
-            eclfile = TreeFile(tmp_overlay, 'eclass', name)
+            eclfile = TreeFile(tmp_overlay, 'eclass', name + '.eclass')
             eclfile.write(eclass)
         ebuilds = self.ebuild_list()
         for name in ebuilds:
