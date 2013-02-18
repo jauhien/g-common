@@ -45,11 +45,11 @@ class OverlayConfig(ConfigFile):
         super().__init__(os.path.join(overlay, DATADIR), CFGFILE)
 
 class RepoNameFile:
-    def __init__(self, overlay):
+    def __init__(self, overlay, repo_name):
         self.name = REPONAMEFILE
         self.directory = os.path.join(overlay, PROFILESDIR)
         self.path = os.path.join(self.directory, self.name)
-        self.repo_name = os.path.split(overlay)[1]
+        self.repo_name = repo_name
 
     def write(self):
         if not os.path.exists(self.directory):

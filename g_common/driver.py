@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os, subprocess
+import glob
 
 from g_common.files import MethodConfig, OverlayConfig, RepoNameFile, TreeFile, EbuildFile
 from g_common.parsers import Command
@@ -43,20 +44,27 @@ class Overlay:
 
     def generate_tree(self):
         print("g-common: populating tree")
-        repo_name = RepoNameFile(self.overlay)
+        tmp_overlay = os.path.join(self.overlay, '.new')
+        repo_name = RepoNameFile(tmp_overlay, self.overlay)
         repo_name.write()
         eclasses = self.eclass_list()
         for name in eclasses:
             print("g-common: eclass " + name)
             eclass = self.eclass_src(name)
-            eclfile = TreeFile(self.overlay, 'eclass', name)
+            eclfile = TreeFile(tmp_overlay, 'eclass', name)
             eclfile.write(eclass)
         ebuilds = self.ebuild_list()
         for name in ebuilds:
             print("g-common: ebuild " + name[0][0] + '/' + name[0][1] + "-" + name[1])
             ebuild = self.ebuild_src(name)
-            eblfile = EbuildFile(self.overlay, name)
+            eblfile = EbuildFile(tmp_overlay, name)
             eblfile.write(ebuild)
+        os.chdir(self.overlay)
+        for f in glob.glob("./*"):
+            subrocess.check_call(['rm', '-rf', f])
+        for f in glob.glob(".new/*"):
+            subprocess.check_call(['mv', f, '.'])
+        subrocess.check_call(['rm', '-rf', '.new'])
         return 0
 
     def eclass_list(self):
