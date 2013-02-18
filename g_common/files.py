@@ -48,7 +48,7 @@ class RepoNameFile:
     def __init__(self, overlay):
         self.name = REPONAMEFILE
         self.directory = os.path.join(overlay, PROFILESDIR)
-        self.path = os.path.join(self.directory, name)
+        self.path = os.path.join(self.directory, self.name)
         self.repo_name = os.path.split(overlay)[1]
 
     def write(self):
