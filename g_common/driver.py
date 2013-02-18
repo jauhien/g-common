@@ -61,7 +61,9 @@ class Overlay:
 
     def eclass_list(self):
         st = self.exec_command(['eclass', 'list'])
-        return st.split('\n')
+        st = st.split("\n")
+        st = [i for i in filter(None, st)]
+        return st
 
     def eclass_src(self, name):
         eclass = self.exec_command(['eclass', 'src', name])
@@ -70,6 +72,7 @@ class Overlay:
     def ebuild_list(self):
         st = self.exec_command(['ebuild', 'list'])
         st = st.split('\n')
+        st = [i for i in filter(None, st)]
         for i in range(len(st)):
              st[i] = st[i].split(' ')
         return st
