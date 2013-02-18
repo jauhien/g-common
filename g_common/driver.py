@@ -66,7 +66,7 @@ class Overlay:
         return st
 
     def eclass_src(self, name):
-        eclass = self.exec_command(['eclass', 'src', name[0][0] + '/' + name[0][1], name[1]])
+        eclass = self.exec_command(['eclass', 'src', name])
         return eclass
 
     def ebuild_list(self):
@@ -79,7 +79,7 @@ class Overlay:
         return st
 
     def ebuild_src(self, name, version):
-        ebuild = self.exec_command(['ebuild', 'src', name, version])
+        ebuild = self.exec_command(['ebuild', 'src', name[0][0] + '/' + name[0][1], name[1]])
         return ebuild
     
     def license_list(self):
