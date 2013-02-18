@@ -78,7 +78,7 @@ class Overlay:
         return st
 
     def ebuild_src(self, name, version):
-        ebuild = self.exec_command(['ebuild', 'src', name])
+        ebuild = self.exec_command(['ebuild', 'src', name, version])
         return ebuild
     
     def license_list(self):
