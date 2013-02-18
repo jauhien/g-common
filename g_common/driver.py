@@ -78,7 +78,7 @@ class Overlay:
              st[i][0] = st[i][0].split('/')
         return st
 
-    def ebuild_src(self, name, version):
+    def ebuild_src(self, name):
         ebuild = self.exec_command(['ebuild', 'src', name[0][0] + '/' + name[0][1], name[1]])
         return ebuild
     
