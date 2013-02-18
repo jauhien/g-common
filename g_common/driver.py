@@ -53,9 +53,9 @@ class Overlay:
             eclfile.write(eclass)
         ebuilds = self.ebuild_list()
         for name in ebuilds:
-            print("g-common: ebuild " + name[0] + "-" + name[1])
-            ebuild = self.ebuild_src(name[0], name[1])
-            eblfile = EbuildFile(self.overlay, name[0], name[1])
+            print("g-common: ebuild " + name[0][0] + '/' + name[0][1] + "-" + name[1])
+            ebuild = self.ebuild_src(name)
+            eblfile = EbuildFile(self.overlay, name)
             eblfile.write(ebuild)
         return 0
 
@@ -66,7 +66,7 @@ class Overlay:
         return st
 
     def eclass_src(self, name):
-        eclass = self.exec_command(['eclass', 'src', name])
+        eclass = self.exec_command(['eclass', 'src', name[0][0] + '/' + name[0][1], name[1]])
         return eclass
 
     def ebuild_list(self):
@@ -75,6 +75,7 @@ class Overlay:
         st = [i for i in filter(None, st)]
         for i in range(len(st)):
              st[i] = st[i].split(' ')
+             st[i][0] = st[i][0].split('/')
         return st
 
     def ebuild_src(self, name, version):
