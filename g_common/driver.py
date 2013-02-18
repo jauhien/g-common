@@ -28,29 +28,87 @@ class Overlay:
             self.exec = o_cfg.cfg['driver']['exec']
             self.method = o_cfg.cfg['driver']['method']
 
+    def exec_command(self, args):
+        return subprocess.check_output([self.exec, self.overlay] + args, universal_newlines=True)
+            
     def sync(self, uri):
         print("g-common: syncing overlay " + self.name)
         self.uri = uri
-        subprocess.check_call([self.exec, self.overlay, 'sync', self.method, self.uri])
+        self.exec_command(['sync', self.method, self.uri])
         o_cfg = OverlayConfig(self.overlay)
         o_cfg.read()
         o_cfg.cfg['overlay'] = {'uri':self.uri, 'name':self.name}
         o_cfg.write()
+        return 0
 
     def generate_tree(self):
-        pass
+        eclasses = self.eclass_list()
+        for name in eclasses:
+            eclass = self.eclass_src(name)
+            print(eclass)
+        return 0
+
+    def eclass_list(self):
+        st = self.exec_command(['eclass', 'list'])
+        return st.split('\n')
+
+    def eclass_src(self, name):
+        eclass = self.exec_command(['eclass', 'src', name])
+        return eclass
+
+    def ebuild_list(self):
+        return 0
+
+    def ebuild_src(self, name, version):
+        return 0
+    
+    def license_list(self):
+        return 0
+
+    def license_src(self, name):
+        return 0
+
 
 class Driver:
     def __init__(self):
         self.cmd = Command('main', arguments=[('overlay', False)], subcommands=[
             ('sync', [('method', False), ('uri', False)], self.sync),
-            ## ('eclass', [], subcommands=[
-            ##     ('list', [], self.eclass_list),
-            ##     ]),
+            ('eclass', [], [
+                ('list', [], self.eclass_list),
+                ('src', [('name', False)], self.eclass_src),
+                ]),
+            ('ebuild', [], [
+                ('list', [], self.ebuild_list),
+                ('src', [('name', False), ('version', False)], self.ebuild_src),
+                ]),
+            ('license', [], [
+                ('list', [], self.license_list),
+                ('src', [('name', False)], self.license_src),
+                ]),
             ])
-    
-    def sync(self):
-        pass
 
-    def eclass_list(self):
-        pass
+    def __call__(self, args=None):
+        args = cmd.parse_args(args)
+        args.action(args)
+    
+    def sync(self, args):
+        return 0
+
+    def eclass_list(self, args):
+        return 0
+
+    def eclass_src(self, args):
+        return 0
+
+    def ebuild_list(self, args):
+        return 0
+
+    def ebuild_src(self, args):
+        return 0
+    
+    def license_list(self, args):
+        return 0
+
+    def license_src(self, args):
+        return 0
+
