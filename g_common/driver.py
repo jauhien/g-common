@@ -42,15 +42,18 @@ class Overlay:
         return 0
 
     def generate_tree(self):
+        print("g-common: populating tree")
         repo_name = RepoNameFile(self.overlay)
         repo_name.write()
         eclasses = self.eclass_list()
         for name in eclasses:
+            print("g-common: eclass + " name)
             eclass = self.eclass_src(name)
             eclfile = TreeFile(self.overlay, 'eclass', name)
             eclfile.write(eclass)
         ebuilds = self.ebuild_list()
         for name in ebuilds:
+            print("g-common: ebuild + " name[0] + "-" + name[1])
             ebuild = self.ebuild_src(name[0], name[1])
             eblfile = EbuildFile(self.overlay, name[0], name[1])
             eblfile.write(ebuild)
