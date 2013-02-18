@@ -3,7 +3,7 @@
 
 import os, subprocess
 
-from g_common.files import MethodConfig, OverlayConfig, RepoNameFile, TreeFile
+from g_common.files import MethodConfig, OverlayConfig, RepoNameFile, TreeFile, EbuildFile
 from g_common.parsers import Command
 
 class Overlay:
