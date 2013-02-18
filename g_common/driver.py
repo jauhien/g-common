@@ -30,6 +30,7 @@ class Overlay:
             self.method = o_cfg.cfg['driver']['method']
 
     def exec_command(self, args):
+        print([self.exec, self.overlay] + args)
         return subprocess.check_output([self.exec, self.overlay] + args, universal_newlines=True)
             
     def sync(self, uri):
