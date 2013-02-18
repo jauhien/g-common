@@ -48,12 +48,12 @@ class Overlay:
         for name in eclasses:
             eclass = self.eclass_src(name)
             eclfile = TreeFile(self.overlay, 'eclass', name)
-            eclfile.write()
+            eclfile.write(eclass)
         ebuilds = self.ebuild_list()
         for name in ebuilds:
             ebuild = self.ebuild_src(name[0], name[1])
             eblfile = EbuildFile(self.overlay, name[0], name[1])
-            eblfile.write()
+            eblfile.write(ebuild)
         return 0
 
     def eclass_list(self):
