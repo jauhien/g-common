@@ -73,7 +73,7 @@ class TreeFile:
 
 class EbuildFile(TreeFile):
     def __init__(self, overlay, name, version):
-        super().__init__(overlay, name, name + '-' + version)
+        super().__init__(overlay, name, name + '-' + version + '.ebuild')
 
     def write(self, src):
         super().write(src)
