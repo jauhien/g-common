@@ -61,10 +61,10 @@ class Overlay:
             eblfile.write(ebuild)
         os.chdir(self.overlay)
         for f in glob.glob("./*"):
-            subrocess.check_call(['rm', '-rf', f])
+            subprocess.check_call(['rm', '-rf', f])
         for f in glob.glob(".new/*"):
             subprocess.check_call(['mv', f, '.'])
-        subrocess.check_call(['rm', '-rf', '.new'])
+        subprocess.check_call(['rm', '-rf', '.new'])
         return 0
 
     def eclass_list(self):
