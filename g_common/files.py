@@ -85,9 +85,11 @@ class TextFile(File):
                 f.write('\n')
 
 class ConfigFile(File):
+    def __init__(self, name, directory, cachedir):
+        super().__init__(name, directory, cachedir)
+        self.src = configparser.ConfigParser()
+    
     def _read_src(self):
-        if self.src is None:
-            self.src = configparser.ConfigParser()
         if self.src.read(self.path) == []:
             raise FileError(self.path, 'config file does not exist')
 
