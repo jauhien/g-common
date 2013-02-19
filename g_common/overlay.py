@@ -70,11 +70,11 @@ class GCommon(Overlay):
         except Exception:
             pass
         o_cfg.src['overlay'] = {'method' : method, 'uri' : uri, 'exec' : cmd}
-        try:
-            o_cfg.cached_write()
-        except Exception:
-            print ('Error when writing overlay config')
-            return -1
+        #try:
+        o_cfg.cached_write()
+        ## except Exception:
+        ##     print ('Error when writing overlay config')
+        ##     return -1
         return 0
 
     def generate_tree(self, args):
