@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, subprocess
+import glob, os, subprocess
 
 from g_common.parsers import Command
 from g_common.exceptions import OverlayError
-from g_common.files import ConfigFile
+from g_common.files import ConfigFile, TextFile
 
 class Overlay:
     def __init__(self):
@@ -70,11 +70,11 @@ class GCommon(Overlay):
         except Exception:
             pass
         o_cfg.src['overlay'] = {'method' : method, 'uri' : uri, 'exec' : cmd}
-        #try:
-        o_cfg.cached_write()
-        ## except Exception:
-        ##     print ('Error when writing overlay config')
-        ##     return -1
+        try:
+            o_cfg.cached_write()
+        except Exception:
+            print ('Error when writing overlay config')
+            return -1
         return 0
 
     def generate_tree(self, args):
@@ -100,9 +100,37 @@ class Driver(Overlay):
         super().__init__()
 
     def sync(self, args):
-        print(" ".join([args.overlay, args.method, args.uri]))
         return 0
 
     def generate_tree(self, args):
-        print(" ".join([args.overlay]))
+        self.overlay = os.path.abspath(args.overlay)
+        self.name = os.path.split(self.overlay)[1]
+        for f in glob.glob(os.path.join(overlay, "*")):
+            self.run_command('rm', ['-rf', f])
+        repo_name = TextFile(os.path.join(overlay, 'profiles'), 'repo_name')
+        repo_name.src = [self.name]
+        repo_name.write()
+        eclasses = self.list_eclasses()
+        for eclass in eclasses:
+            eclass_file = TextFile(os.path.join(overlay, 'eclass'), eclass + '.eclass')
+            eclass_file.src = self.get_eclass(eclass)
+            eclass_file.write()
+        ebuilds = self.list_ebuilds()
+        for ebuild in ebuilds:
+            ebuild_file = TextFile(os.path.join(overlay, ebuild[0]),
+                                   ebuild[1] + '-' + ebuild[2] + '.ebuild')
+            ebuild_file.src = self.get_ebuild(ebuild)
+            self.run_command('ebuild', [ebuild_file.path, 'manifest'])
         return 0
+
+    def list_eclasses(self):
+        return []
+
+    def get_eclass(self, eclass):
+        return []
+
+    def list_ebuilds(self):
+        return []
+
+    def get_ebuild(self, ebuild):
+        return []

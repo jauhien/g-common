@@ -6,13 +6,18 @@ import os, pickle, configparser
 from g_common.exceptions import FileError
 
 class File:
-    def __init__(self, name, directory, cachedir):
+    def __init__(self, name, directory, cachedir = None):
         self.name = name
         self.directory = os.path.abspath(directory)
         self.path = os.path.join(self.directory, name)
-        self.cachedir = os.path.abspath(cachedir)
-        self.cachename = self.path.replace('/', '.')
-        self.cachepath = os.path.join(self.cachedir, self.cachename)
+        if cachedir is None:
+            self.cachedir = None
+            self.cachename = None
+            self.cachepath = None
+        else:
+            self.cachedir = os.path.abspath(cachedir)
+            self.cachename = self.path.replace('/', '.')
+            self.cachepath = os.path.join(self.cachedir, self.cachename)
         self.src = None
         self.mtime = 0
 
@@ -40,6 +45,8 @@ class File:
         self.mtime = os.path.getmtime(self.path)
 
     def read_cache(self):
+        if self.cachedir is None:
+            raise FileError(self.path, 'cache is disabled')
         if not os.path.exists(self.cachepath):
             raise FileError(self.path, 'cache does not exist')
         if os.path.exists(self.path) and \
@@ -50,6 +57,8 @@ class File:
         self.mtime = os.path.getmtime(self.path)
 
     def write_cache(self):
+        if self.cachedir is None:
+            raise FileError(self.path, 'cache is disabled')
         if not os.path.exists(self.cachedir):
             os.makedirs(self.cachedir)
         with open(self.cachepath, 'bw') as f:
