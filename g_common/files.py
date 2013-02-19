@@ -47,6 +47,7 @@ class File:
             raise FileError(self.path, 'old cache')
         with open(self.cachepath, 'br') as f:
             self.src = pickle.load(f)
+        self.mtime = os.path.getmtime(self.path)
 
     def write_cache(self):
         if not os.path.exists(self.cachedir):
