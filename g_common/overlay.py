@@ -94,3 +94,11 @@ class GCommon(Overlay):
 class Driver(Overlay):
     def __init__(self):
         super().__init__()
+
+    def sync(self, args):
+        print(" ".join([args.overlay, args.method, args.uri]))
+        return 0
+
+    def generate_tree(self, args):
+        print(" ".join([args.overlay]))
+        return 0
