@@ -105,19 +105,19 @@ class Driver(Overlay):
     def generate_tree(self, args):
         self.overlay = os.path.abspath(args.overlay)
         self.name = os.path.split(self.overlay)[1]
-        for f in glob.glob(os.path.join(overlay, "*")):
+        for f in glob.glob(os.path.join(self.overlay, "*")):
             self.run_command('rm', ['-rf', f])
-        repo_name = TextFile(os.path.join(overlay, 'profiles'), 'repo_name')
+        repo_name = TextFile(os.path.join(self.overlay, 'profiles'), 'repo_name')
         repo_name.src = [self.name]
         repo_name.write()
         eclasses = self.list_eclasses()
         for eclass in eclasses:
-            eclass_file = TextFile(os.path.join(overlay, 'eclass'), eclass + '.eclass')
+            eclass_file = TextFile(os.path.join(self.overlay, 'eclass'), eclass + '.eclass')
             eclass_file.src = self.get_eclass(eclass)
             eclass_file.write()
         ebuilds = self.list_ebuilds()
         for ebuild in ebuilds:
-            ebuild_file = TextFile(os.path.join(overlay, ebuild[0]),
+            ebuild_file = TextFile(os.path.join(self.overlay, ebuild[0]),
                                    ebuild[1] + '-' + ebuild[2] + '.ebuild')
             ebuild_file.src = self.get_ebuild(ebuild)
             self.run_command('ebuild', [ebuild_file.path, 'manifest'])
