@@ -65,7 +65,7 @@ class GCommon(Overlay):
             print('Error when executing: ' + " ".join([cmd, overlay, 'sync', method, uri]))
             return -1
         o_cfg = ConfigFile(self.cfgfile, datadir, datadir)
-        o_cfg['overlay'] = {'method' : method, 'uri' : uri, 'exec' : cmd}
+        o_cfg.src['overlay'] = {'method' : method, 'uri' : uri, 'exec' : cmd}
         try:
             o_cfg.cached_write()
         except Exception:
