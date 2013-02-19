@@ -1,82 +1,96 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, subprocess
-from configparser import ConfigParser
+import os, pickle, configparser
 
-CONFIGDIR = "/usr/share/g-common/drivers"
-DATADIR = ".g-common"
-CFGFILE = "overlay.cfg"
-PROFILESDIR = "profiles"
-REPONAMEFILE = "repo_name"
+from g_common.exceptions import FileError
 
-class ConfigFile:
-    def __init__(self, directory, name):
+class File:
+    def __init__(self, name, directory, cachedir):
         self.name = name
-        self.directory = directory
-        self.path = os.path.join(directory, name)
-        self.cfg = ConfigParser()
+        self.directory = os.path.abspath(directory)
+        self.path = os.path.join(self.directory, name)
+        self.cachedir = os.path.abspath(cachedir)
+        self.cachename = self.path.replace('/', '.')
+        self.cachepath = os.path.join(self.cachedir, self.cachename)
+        self.src = None
+        self.mtime = 0
 
-    def initialize(self, cfg):
-        if not os.path.exists(self.directory):
-            os.makedirs(self.directory)
-        self.cfg = ConfigParser()
-        for sec_name, sec_val in cfg.items():
-            self.cfg[sec_name] = sec_val
-        with open(self.path, 'w') as configfile:
-            self.cfg.write(configfile)
+    def _read_src(self):
+        with open(self.path, 'r') as f:
+            self.src = f.read()
 
-    def write(self):
-        if not os.path.exists(self.directory):
-            os.makedirs(self.directory)
-        with open(self.path, 'w') as configfile:
-            self.cfg.write(configfile)
+    def _write_src(self):
+        with open(self.path, 'w') as f:
+            f.write(self.src)
 
     def read(self):
-        if (self.cfg.read(self.path) == []): raise IOError
-
-class MethodConfig(ConfigFile):
-    def __init__(self, method):
-        super().__init__(CONFIGDIR, method + ".cfg")
-
-
-class OverlayConfig(ConfigFile):
-    def __init__(self, overlay):
-        super().__init__(os.path.join(overlay, DATADIR), CFGFILE)
-
-class RepoNameFile:
-    def __init__(self, overlay, repo_name):
-        self.name = REPONAMEFILE
-        self.directory = os.path.join(overlay, PROFILESDIR)
-        self.path = os.path.join(self.directory, self.name)
-        self.repo_name = repo_name
+        self._read_src()
+        self.mtime = os.path.getmtime(self.path)
 
     def write(self):
+        if self.src is None:
+            raise FileError(self.path, 'nothing to write')
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
-        with open(self.path, 'w') as repo_name:
-            repo_name.write(self.repo_name)
-        return 0
+        if os.path.exists(self.path) and \
+               (self.mtime < os.path.getmtime(self.path)):
+            raise FileError(self.path, 'modified on disk')
+        self._write_src()
+        self.mtime = os.path.getmtime(self.path)
 
-class TreeFile:
-    def __init__(self, overlay, directory, name):
-        self.name = name
-        self.directory = os.path.join(overlay, directory)
-        self.path = os.path.join(self.directory, name)
+    def read_cache(self):
+        if not os.path.exists(self.cachepath):
+            raise FileError(self.path, 'cache does not exist')
+        if os.path.exists(self.path) and \
+               (os.path.getmtime(self.cachepath) < os.path.getmtime(self.path)):
+            raise FileError(self.path, 'old cache')
+        with open(self.cachepath, 'br') as f:
+            self.src = pickle.load(f)
 
-    def write(self, src):
-        if not os.path.exists(self.directory):
-            os.makedirs(self.directory)
+    def write_cache(self):
+        if not os.path.exists(self.cachedir):
+            os.makedirs(self.cachedir)
+        with open(self.cachepath, 'bw') as f:
+            pickle.dump(self.src, f)
+
+    def cached_read(self):
+        try:
+            self.read_cache()
+        except Exception:
+            self.read()
+        try:
+            self.write_cache()
+        except Exception:
+            pass
+
+    def cached_write(self):
+        self.write()
+        try:
+            self.write_cache()
+        except Exception:
+            pass
+
+class TextFile(File):
+    def _read_src(self):
+        with open(self.path, 'r') as f:
+            self.src = f.read().split('\n')
+            if self.src[-1] == '':
+                self.src = self.src[:-1]
+
+    def _write_src(self):
         with open(self.path, 'w') as f:
-            f.write(src)
-        return 0
+            for line in self.src:
+                f.write(line)
+                f.write('\n')
 
-class EbuildFile(TreeFile):
-    def __init__(self, overlay, name):
-        super().__init__(overlay, os.path.join(name[0][0], name[0][1]),
-                         name[0][1] + '-' + name[1] + '.ebuild')
+class ConfigFile(File):
+    def _read_src(self):
+        if self.src is None:
+            self.src = configparser.ConfigParser()
+        if self.src.read(self.path) == []:
+            raise FileError(self.path, 'config file does not exist')
 
-    def write(self, src):
-        super().write(src)
-        subprocess.check_call(['ebuild', self.path, 'manifest'])
-        return 0
+    def _write_src(self):
+        with open(self.path, 'w') as f:
+            self.src.write(f)
