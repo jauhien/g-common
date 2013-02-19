@@ -5,7 +5,7 @@ from g_common.overlay import GCommon
 
 def main():
     g_common = GCommon()
-    g_common()
+    return g_common()
     
 if __name__ == "__main__":
     sys.exit(main())

@@ -15,7 +15,7 @@ class Overlay:
             ])
         self.overlay = None
 
-    def __call__(self):
+    def __call__(self, args=None):
         args = self.cmd.parse_args(args)
         return args.action(args)
 
