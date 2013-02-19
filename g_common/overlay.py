@@ -79,7 +79,7 @@ class GCommon(Overlay):
         o_cfg = ConfigFile(self.cfgfile, datadir, datadir)
         try:
             o_cfg.cached_read()
-            cmd = m_cfg.src['overlay']['exec']
+            cmd = o_cfg.src['overlay']['exec']
         except Exception:
             print('Error when reading overlay config')
             return -1
