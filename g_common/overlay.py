@@ -123,6 +123,7 @@ class Driver(Overlay):
                                    ebuilddir)
             ebuild_file.src = self.get_ebuild(ebuild)
             ebuild_file.write()
+        print("generating manifests, it may take lots of time")
         print(self.run_command('generate-manifests', [self.overlay]))
         return 0
 

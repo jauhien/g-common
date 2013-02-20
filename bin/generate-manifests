@@ -1,3 +1,3 @@
 #!/bin/sh
 
-find $1 -name '*.ebuild' -exec ebuild {} manifest \;
+find $1 -name '*.ebuild' | parallel ebuild {} manifest
