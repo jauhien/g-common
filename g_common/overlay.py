@@ -121,7 +121,7 @@ class Driver(Overlay):
                                    ebuilddir)
             ebuild_file.src = self.get_ebuild(ebuild)
             ebuild_file.write()
-            manifest = ManifeFile(ebuilddir)
+            manifest = ManifestFile(ebuilddir)
             manifest.digest()
         return 0
 
