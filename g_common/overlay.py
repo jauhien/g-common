@@ -31,7 +31,7 @@ class Overlay:
         if not flag:
             raise OverlayError("command " + cmd + " not found")
         cmd = [cmd,] + args
-        return subprocess.check_output(cmd, universal_newlines=True)
+        subprocess.check_call(cmd, universal_newlines=True)
 
     def sync(self, args):
         return 0
@@ -59,8 +59,7 @@ class GCommon(Overlay):
             print('Error when reading config file for overlay type ' + method)
             return -1
         try:
-            output = self.run_command(cmd, [overlay, 'sync', method, uri])
-            print(output)
+            self.run_command(cmd, [overlay, 'sync', method, uri])
         except Exception:
             print('Error when executing: ' + " ".join([cmd, overlay, 'sync', method, uri]))
             return -1
@@ -88,8 +87,7 @@ class GCommon(Overlay):
             print('Error when reading overlay config')
             return -1
         try:
-            output = self.run_command(cmd, [overlay, 'generate-tree'])
-            print(output)
+            self.run_command(cmd, [overlay, 'generate-tree'])
         except Exception:
             print('Error when executing: ' + " ".join([cmd, overlay, 'generate-tree']))
             return -1
@@ -124,7 +122,7 @@ class Driver(Overlay):
             ebuild_file.src = self.get_ebuild(ebuild)
             ebuild_file.write()
         print("generating manifests, it may take lots of time")
-        print(self.run_command('generate-manifests', [self.overlay]))
+        self.run_command('generate-manifests', [self.overlay])
         return 0
 
     def list_eclasses(self):
