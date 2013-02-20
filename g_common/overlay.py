@@ -123,7 +123,8 @@ class Driver(Overlay):
                                    ebuilddir)
             ebuild_file.src = self.get_ebuild(ebuild)
             ebuild_file.write()
-            #self.run_command('ebuild', [ebuild_file.path, 'manifest'])
+        print(self.run_command('find', [self.overlay, '-name', "'*.ebuild'",
+                                        '-exec', 'ebuild', '{}', 'manifest', '\;']))
         return 0
 
     def list_eclasses(self):
