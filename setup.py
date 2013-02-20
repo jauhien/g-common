@@ -10,6 +10,6 @@ setup(name          = 'g-common',
       author        = 'Jauhien Piatlicki',
       author_email  = 'piatlicki@gmail.com',
       packages      = ['g_common'],
-      scripts       = ['bin/g-common'],
+      scripts       = ['bin/g-common', 'bin/generate-manifests'],
       license       = 'GPL',
       )
