@@ -5,7 +5,7 @@ import glob, os, subprocess
 
 from g_common.parsers import Command
 from g_common.exceptions import OverlayError
-from g_common.files import ConfigFile, TextFile
+from g_common.files import ConfigFile, TextFile, ManifestFile
 
 class Overlay:
     def __init__(self):
@@ -121,8 +121,8 @@ class Driver(Overlay):
                                    ebuilddir)
             ebuild_file.src = self.get_ebuild(ebuild)
             ebuild_file.write()
-        print("generating manifests, it may take lots of time")
-        self.run_command('generate-manifests', [self.overlay])
+            manifest = ManifeFile(ebuilddir)
+            manifest.digest()
         return 0
 
     def list_eclasses(self):

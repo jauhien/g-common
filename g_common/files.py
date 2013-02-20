@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, pickle, configparser
+import os, pickle, configparser, glob
 
 from g_common.exceptions import FileError
+from g_common.parsers import Manifest, manifest
 
 class File:
     def __init__(self, name, directory, cachedir = None):
@@ -106,3 +107,28 @@ class ConfigFile(File):
     def _write_src(self):
         with open(self.path, 'w') as f:
             self.src.write(f)
+
+
+class ManifestFile(File):
+    def __init__(self, directory):
+        super().__init__('Manifest', directory, None)
+
+    def _read_src(self):
+        self.src = manifest.parseFile(self.path).asDict()
+
+    def _write_src(self):
+        with open(self.path, 'w') as f:
+            for name, hashes in self.src.items():
+                f.write(" ".join(['EBUILD', name, hashes.size,
+                                  'SHA256', hashes.sha256,
+                                  'SHA512', hashes.sha512,
+                                  'WHIRLPOOL', hashes.whirlpool]))
+                f.write('\n')
+
+    def digest(self):
+        self.src = {}
+        for ebuild in glob.glob(os.path.join(self.directory, "*.ebuild")):
+            with open(ebuild, 'rb') as f:
+                name = os.path.split(ebuild)[1]
+                self.src[name] = Manifest(src = f.read())
+        self.write()

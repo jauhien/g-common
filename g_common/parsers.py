@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import argparse
+import argparse, hashlib
+
+from pyparsing import *
 
 #arguments parser
 
@@ -56,3 +58,40 @@ class Command:
         return self.argparser.parse_args(args, namespace)
 
 #end arguments parser
+
+class Manifest:
+    def __init__(self, size = None, sha256 = None,
+                 sha512 = None, whirlpool = None,
+                 src = None):
+        self.size = size
+        self.sha256 = sha256
+        self.sha512 = sha512
+        self.whirlpool = whirlpool
+        if not src is None:
+            self.digest(src)
+
+    def digest(self, src):
+        h_sha256 = hashlib.new('SHA256')
+        h_sha512 = hashlib.new('SHA512')
+        h_whirlpool = hashlib.new('whirlpool')
+        h_sha256.update(src)
+        h_sha512.update(src)
+        h_whirlpool.update(src)
+        self.size = str(len(src))
+        self.sha256 = h_sha256.hexdigest()
+        self.sha512 = h_sha512.hexdigest()
+        self.whirlpool = h_whirlpool.hexdigest()
+        
+#manifest parser
+
+file_type = Suppress(Word(alphanums))
+file_name = Word(alphanums + '_-+.')
+size = Word(nums)
+sha256 = Suppress(Literal('SHA256')) + Word(alphanums)
+sha512 = Suppress(Literal('SHA512')) + Word(alphanums)
+whirlpool = Suppress(Literal('WHIRLPOOL')) + Word(alphanums)
+hashes = (size + sha256 + sha512 + whirlpool)\
+         .setParseAction(lambda s, l, t: [Manifest(t[0], t[1], t[2], t[3])])
+manifest = Dict(OneOrMore(Group(file_type + file_name + hashes)))
+
+#end manifest parser
