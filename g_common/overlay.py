@@ -120,6 +120,7 @@ class Driver(Overlay):
             ebuild_file = TextFile(ebuild[1] + '-' + ebuild[2] + '.ebuild',
                                    os.path.join(self.overlay, ebuild[0]))
             ebuild_file.src = self.get_ebuild(ebuild)
+            ebuild_file.write()
             self.run_command('ebuild', [ebuild_file.path, 'manifest'])
         return 0
 
