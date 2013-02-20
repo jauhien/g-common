@@ -1,6 +1,6 @@
 I'm planning to rewrite g-common from here: http://git.overlays.gentoo.org/gitweb/?p=proj/g-cran.git;a=summary
 
-The reason is project is abandoned.
+The reason is that project is abandoned.
 
 Current status:
 
@@ -40,45 +40,12 @@ populate overlay with ebuilds and other data
 
 **g-driver interface**
 
-*g-common* uses appropriate *g-driver* to have the job done
-
-
-- **g-driver** *&lt;overlay&gt;* ***sync*** *&lt;method&gt;* *&lt;url&gt;*
-
-synchronize overlay
-
-*overlay* -- path to overlay
-
-*method* -- type of overlay
-
-*url* -- repository url
-
-- **g-driver** *&lt;overlay&gt;* ***ebuild*** ***list***
-
-list packages from overlay in the format
-&lt;category&gt;/&lt;package&gt; &lt;version&gt;
-one package per line
-
-- **g-driver** *&lt;overlay&gt;* ***ebuild*** ***src*** &lt;category&gt;/&lt;package&gt; &lt;version&gt;
-
-display source code of a given ebuild
-
-- **g-driver** *&lt;overlay&gt;* ***eclass*** ***list***
-
-list eclasses 
-
-- **g-driver** *&lt;overlay&gt;* ***eclass*** ***src*** &lt;name&gt;
-
-display source code of a given eclass
-
-- **g-driver** *&lt;overlay&gt;* ***license*** ***list***
-
-list eclasses 
-
-- **g-driver** *&lt;overlay&gt;* ***license*** ***src*** &lt;name&gt;
-
-display given license
+It is the same. g-common just calls g-driver with the same arguments.
+On sync g-driver should download any necessary information. On generate-tree g-driver should generate ebuilds, eclasses and other stuff that overlay needs.
 
 Every driver should install:
 - config file at /usr/share/g-common/drivers/ named &lt;name&gt;.cfg for every overlay-type it supports. An example can be found in https://github.com/jauhien/g-elisp.
 - xml-file with list of overlays at /etc/layman/overlays/ (see layman manpage) and https://github.com/jauhien/g-elisp for an example.
+
+g-common and g-elisp work now. They can be installed from https://github.com/jauhien/jauhien-overlay
+Their status is still highly experimental, code is buggy and without many checks. Just a proof of concept.
