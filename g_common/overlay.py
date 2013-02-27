@@ -40,13 +40,26 @@ class Overlay:
         return 0
 
 class GCommon(Overlay):
+    """The main class in g-common."""
     def __init__(self):
         super().__init__()
-        self.configdir = "/usr/share/g-common/drivers"
-        self.datadir = ".g-common"
-        self.cfgfile = "overlay.cfg"
+        self.configdir = "/usr/share/g-common/drivers" #directory for drivers' configs
+        #layman uses these configs to test whether overlay is supported
+
+        self.datadir = ".g-common"   #directory in an overlay used by g-common
+        self.cfgfile = "overlay.cfg" #config of an overlay
 
     def sync(self, args):
+        """Do all the synchronization with online repo. No tree generation here.
+
+        args should contain next fields:
+        overlay -- overlay directory
+        method -- type of repository (method of sync/generate tree)
+        uri -- uri of repository
+
+        This function just reads a name of executable from an appropriate config file
+        and calls it with the same arguments (cmd <overlay> sync <method> <uri>).
+        """
         overlay = args.overlay
         method = args.method
         uri = args.uri
@@ -55,41 +68,52 @@ class GCommon(Overlay):
         try:
             m_cfg.cached_read()
             cmd = m_cfg.src['driver']['exec']
-        except Exception:
-            print('Error when reading config file for overlay type ' + method)
+        except Exception as ex:
+            print('Error when reading config file for overlay type ' + method + ': ' +
+                  str(ex))
             return -1
         try:
             self.run_command(cmd, [overlay, 'sync', method, uri])
-        except Exception:
-            print('Error when executing: ' + " ".join([cmd, overlay, 'sync', method, uri]))
+        except Exception as ex:
+            print('Error when executing ' + " ".join([cmd, overlay, 'sync', method, uri]) + ': ' +
+                  str(ex))
             return -1
         o_cfg = ConfigFile(self.cfgfile, datadir, datadir)
         try:
             o_cfg.cached_read()
-        except Exception:
-            pass
+        except Exception as ex:
+            print('Info: ' + str(ex))
         o_cfg.src['overlay'] = {'method' : method, 'uri' : uri, 'exec' : cmd}
         try:
             o_cfg.cached_write()
-        except Exception:
-            print ('Error when writing overlay config')
+        except Exception as ex:
+            print ('Error when writing overlay config: ' + str(ex))
             return -1
         return 0
 
     def generate_tree(self, args):
+        """Generate ebuilds and other stuff. No Internet connections here.
+
+        args should contain next fields:
+        overlay -- overlay directory
+
+        This function just reads a name of executable from an appropriate config file
+        and calls it with the same arguments (cmd <overlay> generate-tree).
+        """
         overlay = args.overlay
         datadir = os.path.join(overlay, self.datadir)
         o_cfg = ConfigFile(self.cfgfile, datadir, datadir)
         try:
             o_cfg.cached_read()
             cmd = o_cfg.src['overlay']['exec']
-        except Exception:
-            print('Error when reading overlay config')
+        except Exception as ex:
+            print('Error when reading overlay config: ' + str(ex))
             return -1
         try:
             self.run_command(cmd, [overlay, 'generate-tree'])
-        except Exception:
-            print('Error when executing: ' + " ".join([cmd, overlay, 'generate-tree']))
+        except Exception as ex:
+            print('Error when executing ' + " ".join([cmd, overlay, 'generate-tree']) + ": " +
+                  str(ex))
             return -1
         return 0
 
