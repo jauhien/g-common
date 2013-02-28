@@ -10,7 +10,7 @@
 
 import unittest
 
-from t_overlay import TestGCommon
+from t_overlay import TestGCommon, TestDriver
 
 if __name__ == '__main__':
     unittest.main()

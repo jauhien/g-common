@@ -8,7 +8,7 @@
 # Author(s):
 #             Jauhien Piatlicki <piatlicki@gmail.com>
 
-import os
+import os, subprocess
 
 def get_pkgpath():
      root = __file__
@@ -23,3 +23,24 @@ def cp_and_replace(src_path, dest_path, replace_list=[]):
         s = s.replace(i[0], i[1])
     with open(dest_path, 'w') as f:
         f.write(s)
+
+def test_file(path, src):
+     with open(path, 'r') as f:
+            s = f.read()
+     return (s.replace('\n','') == "".join(src))
+
+def test_manifest(directory):
+     with open(os.path.join(directory, 'Manifest'), 'r') as f:
+          s = f.read()
+     s = s.split('\n')
+     cd = os.getcwd()
+     os.chdir(directory)
+     subprocess.check_call(['repoman', 'manifest'])
+     with open(os.path.join(directory, 'Manifest'), 'r') as f:
+          c = f.read()
+     c = c.split('\n')
+     os.chdir(cd)
+     flag = True
+     for i in s:
+          flag = flag and (i in c)
+     return flag
