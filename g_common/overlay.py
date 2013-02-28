@@ -118,13 +118,57 @@ class GCommon(Overlay):
         return 0
 
 class Driver(Overlay):
+    """A base class for g-drivers.
+
+    It is aimed to simplify creation of g-drivers.
+    It supports only the simplest overlays now:
+    only ebuilds, eclasses and repo_name in the overlay tree.
+    If you want more, write your g-driver from scratch
+    or improve this class )).
+
+    To create new g-driver inherit this class and implement
+    your own function:
+
+    sync -- sync with online repo
+    list_eclasses -- list eclasses in overlay
+    get_eclass -- get a given eclass source code
+    list_ebuilds -- list ebuilds in overlay
+    get_ebuild -- get a given ebuild source code
+
+    Then create an instance of your class and call it
+    with appropriate arguments. If no arguments given,
+    it will use those from the command line.
+
+    Example:
+    class GDriver(Driver):
+        #usefull code here
+    g_driver = GDriver()
+    g_driver()
+    """
     def __init__(self):
         super().__init__()
 
     def sync(self, args):
+        """Do all the synchronization with online repo. No tree generation here.
+
+        args will contain next fields:
+        overlay -- overlay directory
+        method -- type of repository (method of sync/generate tree)
+        uri -- uri of repository
+
+        To be implemented in g-driver.
+        """
         return 0
 
     def generate_tree(self, args):
+        """Generate ebuilds and other stuff. No Internet connections here.
+
+        args will contain next fields:
+        overlay -- overlay directory
+
+        This function does all the work with the overlay tree.
+        It calls list_ebuilds, get_ebuild, list_eclasses and get_eclass functions.
+        """
         self.overlay = os.path.abspath(args.overlay)
         self.name = os.path.split(self.overlay)[1]
         for f in glob.glob(os.path.join(self.overlay, "*")):
@@ -150,13 +194,31 @@ class Driver(Overlay):
         return 0
 
     def list_eclasses(self):
+        """Return a list of eclass names (strings).
+
+        To be implemented in g-driver.
+        """
         return []
 
     def get_eclass(self, eclass):
+        """Return source code of a given eclass as list of lines.
+
+        To be implemented in g-driver.
+        """
         return []
 
     def list_ebuilds(self):
+        """Return a list of ebuilds.
+
+        Each list entry is a tuple (category, name, version).
+        To be implemented in g-driver.
+        """
         return []
 
     def get_ebuild(self, ebuild):
+        """Return source code of a given ebuild as list of lines.
+
+        Argument is a tuple (category, name, version).
+        To be implemented in g-driver.
+        """
         return []
