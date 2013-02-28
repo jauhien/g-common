@@ -8,7 +8,7 @@
 # Author(s):
 #             Jauhien Piatlicki <piatlicki@gmail.com>
 
-import os, pickle, configparser, glob
+import os, pickle, configparser, time, glob
 
 from g_common.exceptions import FileError
 from g_common.parsers import Manifest, manifest
@@ -138,4 +138,5 @@ class ManifestFile(File):
             with open(ebuild, 'rb') as f:
                 name = os.path.split(ebuild)[1]
                 self.src[name] = Manifest(src = f.read())
+        self.mtime = time.time()
         self.write()
