@@ -47,5 +47,5 @@ Every driver should install:
 - config file at /usr/share/g-common/drivers/ named &lt;name&gt;.cfg for every overlay-type it supports. An example can be found in https://github.com/jauhien/g-elisp.
 - xml-file with list of overlays at /etc/layman/overlays/ (see layman manpage) and https://github.com/jauhien/g-elisp for an example.
 
-g-common and g-elisp work now. They can be installed from https://github.com/jauhien/jauhien-overlay
+g-common and g-elisp work now. They can be installed from jauhien overlay (to add it do `layman -a jauhien`).
 Their status is still highly experimental, code is buggy and without many checks. Just a proof of concept.
