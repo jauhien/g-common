@@ -1,3 +1,5 @@
+***Deprecated, use https://github.com/jauhien/g-sorcery instead***
+
 I'm planning to rewrite g-common from here: http://git.overlays.gentoo.org/gitweb/?p=proj/g-cran.git;a=summary
 
 The reason is that project is abandoned.
